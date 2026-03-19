@@ -1,3 +1,9 @@
+# Backup files
+*~
+
+# Generated files
+*.html
+
 # Ignore storage contents (but keep folders)
 storage/uploads/*
 storage/processing/*
