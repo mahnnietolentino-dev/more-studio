@@ -1,0 +1,18 @@
+# Ignore storage contents (but keep folders)
+storage/uploads/*
+storage/processing/*
+storage/output/*
+storage/logs/*
+
+# Keep folder structure
+!storage/uploads/.gitkeep
+!storage/processing/.gitkeep
+!storage/output/.gitkeep
+!storage/logs/.gitkeep
+
+# Environment file
+.env
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
