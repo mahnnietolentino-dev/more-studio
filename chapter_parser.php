@@ -136,3 +136,66 @@ $dom->loadXML($xml->asXML());
 $dom->save($manifestPath);
 
 echo "Saved: manifest.xml\n";
+
+
+$zipPath = $base . "lesson.zip";
+
+$zip = new ZipArchive();
+
+if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+
+    $files = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($base),
+        RecursiveIteratorIterator::LEAVES_ONLY
+    );
+
+    foreach ($files as $file) {
+
+        if (!$file->isDir()) {
+
+            $filePath = $file->getRealPath();
+
+            // Skip the zip itself if rerunning
+            if (basename($filePath) === "lesson.zip") continue;
+
+            // Relative path inside zip
+            $baseRealPath = realpath($base) . DIRECTORY_SEPARATOR;
+
+$files = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($base),
+    RecursiveIteratorIterator::LEAVES_ONLY
+);
+
+foreach ($files as $file) {
+
+    if (!$file->isDir()) {
+
+        $filePath = $file->getRealPath();
+
+        // Skip zip itself
+        if (basename($filePath) === "lesson.zip") continue;
+
+        // ✅ CLEAN relative path
+        $relativePath = str_replace($baseRealPath, '', $filePath);
+
+        $zip->addFile($filePath, $relativePath);
+    }
+}
+
+            $zip->addFile($filePath, $relativePath);
+        }
+    }
+
+    $zip->close();
+
+    echo "ZIP created: $zipPath\n";
+
+} else {
+    die("❌ Failed to create ZIP\n");
+}
+
+$morePath = $base . "lesson.more";
+
+rename($zipPath, $morePath);
+
+echo "Package ready: $morePath\n";
