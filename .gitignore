@@ -9,6 +9,7 @@ storage/uploads/*
 storage/processing/*
 storage/output/*
 storage/logs/*
+media/*
 
 # Keep folder structure
 !storage/uploads/.gitkeep
