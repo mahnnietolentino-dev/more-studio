@@ -54,7 +54,31 @@ function parseQuizFromHtml($html)
                 ];
             }
 
-            // (TF and SHORT later)
+            // Add after MCQ block
+
+elseif ($type === 'TF') {
+
+    $answer = strtolower($lines[$i]);
+    $i++;
+
+    $quizzes[] = [
+        "type" => "TF",
+        "question" => $question,
+        "answer" => $answer === 'true'
+    ];
+}
+
+elseif ($type === 'SHORT') {
+
+    $answer = $lines[$i];
+    $i++;
+
+    $quizzes[] = [
+        "type" => "SHORT",
+        "question" => $question,
+        "answer" => $answer
+    ];
+}
 
         } else {
             $i++;
