@@ -1,5 +1,32 @@
 <?php
 require 'quiz_parser.php';
+require 'process_images.php';
+require 'remove_quizblocks.php';
+
+$input = "test.docx";
+$output = "output.html";
+
+// Build command safely
+$command = "pandoc " 
+    . escapeshellarg($input) 
+    . " -o " . escapeshellarg($output) 
+    . " --extract-media=.";
+
+// Execute command
+exec($command, $outputLog, $returnCode);
+
+// Output results
+echo "Command: $command\n\n";
+
+if ($returnCode === 0) {
+    echo "✅ Conversion successful!\n";
+} else {
+    echo "❌ Conversion failed!\n";
+}
+
+echo "\nOutput log:\n";
+print_r($outputLog);
+
 
 function parseChapters($htmlFile)
 {
@@ -52,7 +79,8 @@ function parseChapters($htmlFile)
 
 $chapters = parseChapters("output.html");
 
-$base = "storage/processing/build_1/";
+$buildId = "build_" . date("Ymd_His");
+$base = "storage/processing/" . $buildId . "/";
 
 // Create folders
 if (!is_dir($base . "chapters")) {
@@ -63,15 +91,30 @@ if (!is_dir($base . "quizzes")) {
     mkdir($base . "quizzes", 0777, true);
 }
 
+if (!is_dir($base . "assets")) {
+    mkdir($base . "assets", 0777, true);
+}
+
 foreach ($chapters as $index => $ch) {
 
     $num = $index + 1;
-
+	 $processedHtml = processImages($ch["content"], $base);
+	 
     // Save chapter
-    file_put_contents(
-        $base . "chapters/ch{$num}.html",
-        $ch["content"]
-    );
+    // Original (backup)
+/*file_put_contents(
+    $base . "chapters/ch{$num}_original.html",
+    $ch["content"]
+);*/
+
+// Quiz cleanup
+$cleanHtml = removeQuizBlocks($processedHtml);
+
+// Processed version
+file_put_contents(
+    $base . "chapters/ch{$num}.html",
+    $cleanHtml
+);
 
     echo "Saved: chapters/ch{$num}.html\n";
 
@@ -173,7 +216,10 @@ foreach ($files as $file) {
         $filePath = $file->getRealPath();
 
         // Skip zip itself
-        if (basename($filePath) === "lesson.zip") continue;
+        if (
+    basename($filePath) === "lesson.zip" ||
+    basename($filePath) === "lesson.more"
+) continue;
 
         // ✅ CLEAN relative path
         $relativePath = str_replace($baseRealPath, '', $filePath);

@@ -58,14 +58,19 @@ function parseQuizFromHtml($html)
 
 elseif ($type === 'TF') {
 
-    $answer = strtolower($lines[$i]);
-    $i++;
+    // Expect: True or False (or True*, False*)
+    $line = $lines[$i];
+
+    $isTrue = str_contains($line, 'True');
+    $isCorrect = str_contains($line, '*');
 
     $quizzes[] = [
         "type" => "TF",
         "question" => $question,
-        "answer" => $answer === 'true'
+        "answer" => $isTrue ? ($isCorrect ? true : false) : ($isCorrect ? false : true)
     ];
+
+    $i++;
 }
 
 elseif ($type === 'SHORT') {
