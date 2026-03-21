@@ -1,41 +1,37 @@
 <?php
-
 function parseQuizFromHtml($html)
 {
-    // Strip tags to simplify parsing
-    $text = strip_tags($html);
+    $quizBlocks = [];
 
-    // Split into lines
-    $lines = array_values(array_filter(array_map('trim', explode("\n", $text))));
+    // 1. Extract QUIZ blocks
+    preg_match_all('/\[QUIZ\](.*?)\[\/QUIZ\]/s', $html, $blocks);
 
-    $quizzes = [];
-    $i = 0;
+    foreach ($blocks[1] as $block) {
 
-    while ($i < count($lines)) {
+        $questions = [];
 
-        if ($lines[$i] === '[QUIZ]') {
+        // 2. Extract types inside
+        preg_match_all('/\[(MCQ|TF|SHORT)\](.*?)\[\/\1\]/s', $block, $types, PREG_SET_ORDER);
 
-            $i++;
+        foreach ($types as $t) {
 
-            $type = str_replace(['[', ']'], '', $lines[$i]);
-            $i++;
+            $type = $t[1];
+            $content = trim(strip_tags($t[2]));
 
-            // QUESTION
-            $question = $lines[$i];
-            $i++;
+            $lines = array_values(array_filter(array_map('trim', explode("\n", $content))));
 
-            // MCQ handling
+            // ---- MCQ ----
             if ($type === 'MCQ') {
 
+                $question = array_shift($lines);
                 $choices = [];
 
-                while ($i < count($lines) && preg_match('/^[A-Z]\./', $lines[$i])) {
+                foreach ($lines as $line) {
 
-                    $line = $lines[$i];
+                    if (!preg_match('/^[A-Z]\./', $line)) continue;
 
                     $isCorrect = str_contains($line, '*');
 
-                    // Clean text
                     $line = str_replace('*', '', $line);
                     $line = preg_replace('/^[A-Z]\.\s*/', '', $line);
 
@@ -43,52 +39,53 @@ function parseQuizFromHtml($html)
                         "text" => trim($line),
                         "correct" => $isCorrect
                     ];
-
-                    $i++;
                 }
 
-                $quizzes[] = [
+                $questions[] = [
                     "type" => "MCQ",
                     "question" => $question,
                     "choices" => $choices
                 ];
             }
 
-            // Add after MCQ block
+            // ---- TF ----
+            elseif ($type === 'TF') {
 
-elseif ($type === 'TF') {
+                $question = $lines[0] ?? '';
+                $answerLine = $lines[1] ?? '';
 
-    // Expect: True or False (or True*, False*)
-    $line = $lines[$i];
+                $isTrue = str_contains($answerLine, 'True');
+                $isCorrect = str_contains($answerLine, '*');
 
-    $isTrue = str_contains($line, 'True');
-    $isCorrect = str_contains($line, '*');
+                $answer = $isTrue ? $isCorrect : !$isCorrect;
 
-    $quizzes[] = [
-        "type" => "TF",
-        "question" => $question,
-        "answer" => $isTrue ? ($isCorrect ? true : false) : ($isCorrect ? false : true)
-    ];
+                $questions[] = [
+                    "type" => "TF",
+                    "question" => $question,
+                    "answer" => $answer
+                ];
+            }
 
-    $i++;
-}
+            // ---- SHORT ----
+            elseif ($type === 'SHORT') {
 
-elseif ($type === 'SHORT') {
+                $question = $lines[0] ?? '';
+                $answer = $lines[1] ?? '';
 
-    $answer = $lines[$i];
-    $i++;
-
-    $quizzes[] = [
-        "type" => "SHORT",
-        "question" => $question,
-        "answer" => $answer
-    ];
-}
-
-        } else {
-            $i++;
+                $questions[] = [
+                    "type" => "SHORT",
+                    "question" => $question,
+                    "answer" => $answer
+                ];
+            }
         }
+
+        // ✅ THIS IS THE KEY FIX
+        $quizBlocks[] = [
+            "questions" => $questions
+        ];
     }
 
-    return $quizzes;
+    return $quizBlocks;
 }
+?>

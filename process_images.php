@@ -1,58 +1,59 @@
 <?php
 function processImages($html, $basePath) {
 
-    $dom = new DOMDocument();
-    libxml_use_internal_errors(true);
-    $dom->loadHTML($html);
-    libxml_clear_errors();
-
-    $images = $dom->getElementsByTagName('img');
-
     $counter = 1;
 
-    foreach ($images as $img) {
+    return preg_replace_callback('/<img[^>]*src="([^"]+)"[^>]*>/is', function ($matches) use ($basePath, &$counter) {
 
-        $src = $img->getAttribute('src');
+        $src = $matches[1];
 
-        if (!$src) continue;
-
-        // Original path
-        $originalPath = __DIR__ . "/" . $src;
+// Resolve path properly
+$originalPath = dirname(__FILE__) . '/' . ltrim($src, './');
 
 echo "IMG SRC: $src\n";
-echo "Trying: " . __DIR__ . "/" . $src . "\n";
+echo "Resolved: $originalPath\n";
+echo file_exists($originalPath) ? "✅ FOUND\n\n" : "❌ NOT FOUND\n\n";
 
-if (!file_exists(__DIR__ . "/" . $src)) {
-    echo "❌ NOT FOUND\n\n";
-} else {
-    echo "✅ FOUND\n\n";
+if (!file_exists($originalPath)) {
+    $originalPath = __DIR__ . '/' . ltrim($src, './');
 }
-        
-        //if (!file_exists($originalPath)) continue;
 
-        // New filename
         $newName = "img" . $counter . ".jpg";
         $newPath = $basePath . "assets/" . $newName;
 
-        // Compress using ImageMagick
         $cmd = "convert " . escapeshellarg($originalPath) .
                " -quality 70 " .
                escapeshellarg($newPath);
 
         exec($cmd, $output, $returnCode);
 
-if ($returnCode !== 0) {
-    echo "❌ ImageMagick failed: $cmd\n";
-} else {
-    echo "✅ Image optimized: $newName\n";
-}
+        if ($returnCode !== 0) {
+            echo "❌ ImageMagick failed\n";
+            return $matches[0];
+        }
 
-        // Update HTML path
-        $img->setAttribute('src', "../assets/" . $newName);
+        echo "✅ Image optimized: $newName\n";
 
         $counter++;
-    }
 
-    return $dom->saveHTML();
+        // Replace src
+        $imgTag = $matches[0];
+
+// 1. Replace src
+$imgTag = preg_replace(
+    '/src="[^"]+"/',
+    'src="../assets/' . $newName . '"',
+    $imgTag
+);
+
+// 2. Remove style attribute (width/height)
+$imgTag = preg_replace('/\s*style="[^"]*"/i', '', $imgTag);
+
+// 3. Optional: remove width/height attributes if present
+$imgTag = preg_replace('/\s*(width|height)="[^"]*"/i', '', $imgTag);
+
+return $imgTag;
+
+    }, $html);
 }
 ?>

@@ -1,26 +1,18 @@
 <?php
-function removeQuizBlocks($html) {
+function replaceQuizBlocks($html, $chapterNum)
+{
+    $index = 0;
 
-    $dom = new DOMDocument();
-    libxml_use_internal_errors(true);
-    $dom->loadHTML($html);
-    libxml_clear_errors();
+    return preg_replace_callback(
+        '/<p>\s*\[QUIZ\](.*?)\[\/QUIZ\]\s*<\/p>/s',
+        function ($matches) use ($chapterNum, &$index) {
 
-    $xpath = new DOMXPath($dom);
+            $index++;
 
-    // Find all nodes containing [QUIZ]
-    foreach ($xpath->query("//*[contains(text(),'[QUIZ]')]") as $node) {
-
-        $current = $node;
-
-        // Remove until next non-quiz block
-        while ($current && strpos($current->textContent, '[QUIZ]') !== false) {
-            $next = $current->nextSibling;
-            $current->parentNode->removeChild($current);
-            $current = $next;
-        }
-    }
-
-    return $dom->saveHTML();
+            return '<div class="quiz" data-src="../quizzes/ch' 
+                . $chapterNum . '.json" data-index="' . $index . '"></div>';
+        },
+        $html
+    );
 }
 ?>

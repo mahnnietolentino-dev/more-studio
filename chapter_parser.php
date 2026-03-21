@@ -2,6 +2,7 @@
 require 'quiz_parser.php';
 require 'process_images.php';
 require 'remove_quizblocks.php';
+require 'validate_quizblock.php';
 
 $input = "test.docx";
 $output = "output.html";
@@ -32,44 +33,23 @@ function parseChapters($htmlFile)
 {
     $html = file_get_contents($htmlFile);
 
-    // Load into DOM
-    $dom = new DOMDocument();
-    libxml_use_internal_errors(true); // suppress warnings
-    $dom->loadHTML($html);
-    libxml_clear_errors();
+    $parts = preg_split('/(<h1[^>]*>.*?<\/h1>)/is', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-    $body = $dom->getElementsByTagName('body')->item(0);
+$chapters = [];
 
-    $chapters = [];
-    $currentChapter = null;
+for ($i = 1; $i < count($parts); $i += 2) {
 
-    foreach ($body->childNodes as $node) {
+    $titleHtml = $parts[$i];
+    $content = $parts[$i + 1] ?? '';
 
-        // Detect <h1> = new chapter
-        if ($node->nodeName === 'h1') {
+    // 🔥 IMPORTANT: preserve everything exactly
+    $fullContent = $titleHtml . "\n" . $content;
 
-            // Save previous chapter
-            if ($currentChapter !== null) {
-                $chapters[] = $currentChapter;
-            }
-
-            $currentChapter = [
-    "title" => trim($node->textContent),
-    "content" => $dom->saveHTML($node) // ✅ include the h1
-];
-
-        } else {
-            // Append content to current chapter
-            if ($currentChapter !== null) {
-                $currentChapter["content"] .= $dom->saveHTML($node);
-            }
-        }
-    }
-
-    // Save last chapter
-    if ($currentChapter !== null) {
-        $chapters[] = $currentChapter;
-    }
+    $chapters[] = [
+        "title" => trim(strip_tags($titleHtml)),
+        "content" => $fullContent
+    ];
+}
 
     return $chapters;
 }
@@ -98,7 +78,7 @@ if (!is_dir($base . "assets")) {
 foreach ($chapters as $index => $ch) {
 
     $num = $index + 1;
-	 $processedHtml = processImages($ch["content"], $base);
+    $processedHtml = processImages($ch["content"], $base);
 	 
     // Save chapter
     // Original (backup)
@@ -108,7 +88,7 @@ foreach ($chapters as $index => $ch) {
 );*/
 
 // Quiz cleanup
-$cleanHtml = removeQuizBlocks($processedHtml);
+$cleanHtml = replaceQuizBlocks($processedHtml, $num);
 
 // Processed version
 file_put_contents(
@@ -192,41 +172,22 @@ if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
         RecursiveIteratorIterator::LEAVES_ONLY
     );
 
+    $baseRealPath = realpath($base) . DIRECTORY_SEPARATOR; // ✅ move outside loop
+
     foreach ($files as $file) {
 
         if (!$file->isDir()) {
 
             $filePath = $file->getRealPath();
 
-            // Skip the zip itself if rerunning
-            if (basename($filePath) === "lesson.zip") continue;
+            // Skip zip itself
+            if (
+                basename($filePath) === "lesson.zip" ||
+                basename($filePath) === "lesson.more"
+            ) continue;
 
-            // Relative path inside zip
-            $baseRealPath = realpath($base) . DIRECTORY_SEPARATOR;
-
-$files = new RecursiveIteratorIterator(
-    new RecursiveDirectoryIterator($base),
-    RecursiveIteratorIterator::LEAVES_ONLY
-);
-
-foreach ($files as $file) {
-
-    if (!$file->isDir()) {
-
-        $filePath = $file->getRealPath();
-
-        // Skip zip itself
-        if (
-    basename($filePath) === "lesson.zip" ||
-    basename($filePath) === "lesson.more"
-) continue;
-
-        // ✅ CLEAN relative path
-        $relativePath = str_replace($baseRealPath, '', $filePath);
-
-        $zip->addFile($filePath, $relativePath);
-    }
-}
+            // ✅ THIS IS WHAT YOU'RE MISSING
+            $relativePath = str_replace($baseRealPath, '', $filePath);
 
             $zip->addFile($filePath, $relativePath);
         }
