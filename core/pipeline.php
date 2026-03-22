@@ -6,7 +6,7 @@ require_once __DIR__ . '/quiz_parser.php';
 require_once __DIR__ . '/remove_quizblocks.php';
 require_once __DIR__ . '/validate_quizblock.php';
 
-function runPipeline($inputPath) {
+function runPipeline($inputPath, $authorId, $contributors) {
 
     // 1. Create unique processing folder
     $jobId = uniqid('job_', true);
@@ -17,9 +17,28 @@ function runPipeline($inputPath) {
     }
 
     // 2. CALL YOUR MAIN FUNCTION HERE 🔥
-    $result = buildPackage($inputPath, $processingDir);
+    $result = buildPackage($inputPath, $processingDir, $authorId, $contributors);
 
     return $result;
+}
+
+function generateContributorsXML($contributors) {
+    $xml = "<contributors>";
+
+    foreach ($contributors as $person) {
+        $xml .= "<person role=\"{$person['role']}\">";
+
+        if (isset($person['id'])) {
+            $xml .= "<id>{$person['id']}</id>";
+        }
+
+        $xml .= "<name>{$person['name']}</name>";
+        $xml .= "</person>";
+    }
+
+    $xml .= "</contributors>";
+
+    return $xml;
 }
 ?>
 

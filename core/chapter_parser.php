@@ -1,7 +1,7 @@
 <?php
 //runPipeline($destination);
 
-function buildPackage($inputPath, $processingDir)
+function buildPackage($inputPath, $processingDir, $authorId, $contributors)
 {
     // 1. Convert DOCX → HTML
     $htmlPath = $processingDir . "/converted.html";
@@ -61,6 +61,19 @@ function buildPackage($inputPath, $processingDir)
     $metadata->addChild('formatCreator', 'Mahnnie Tolentino');
     $metadata->addChild('generator', 'MoRe Studio');
     $metadata->addChild('created', date('Y-m-d'));
+
+	$contributorsNode = $xml->addChild('contributors');
+
+	foreach ($contributors as $person) {
+	    $personNode = $contributorsNode->addChild('person');
+	    $personNode->addAttribute('role', $person['role']);
+
+	    if (isset($person['id'])) {
+	        $personNode->addChild('id', $person['id']);
+	    }
+
+	    $personNode->addChild('name', htmlspecialchars($person['name']));
+	}
 
     $chaptersNode = $xml->addChild('chapters');
 

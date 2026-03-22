@@ -1,4 +1,11 @@
 <?php
+require_once '../core/auth.php';
+requireAuth();
+
+$user = getUser();
+$authorId = $user['author_id'];
+$email = $user['email'];
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
@@ -52,7 +59,33 @@ if (!move_uploaded_file($file['tmp_name'], $destination)) {
 }
 
 // 9. Run pipeline
-$result = runPipeline($destination);
+$contributors = [];
+
+// Owner
+$contributors[] = [
+    'role' => 'author',
+    'id' => $authorId,
+    'name' => $email
+];
+
+function addPeople($string, $role, &$contributors) {
+    $people = array_map('trim', explode(',', $string));
+    foreach ($people as $person) {
+        if (!empty($person)) {
+            $contributors[] = [
+                'role' => $role,
+                'name' => $person
+            ];
+        }
+    }
+}
+
+addPeople($_POST['authors'] ?? '', 'author', $contributors);
+addPeople($_POST['editors'] ?? '', 'editor', $contributors);
+addPeople($_POST['artists'] ?? '', 'artist', $contributors);
+
+// ✅ SINGLE correct call
+$result = runPipeline($destination, $authorId, $contributors);
 
 // 10. Handle pipeline result
 if (!$result['success']) {
