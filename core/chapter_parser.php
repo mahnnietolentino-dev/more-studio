@@ -1,7 +1,7 @@
 <?php
 //runPipeline($destination);
 
-function buildPackage($inputPath, $processingDir, $authorId, $contributors)
+function buildPackage($inputPath, $processingDir, $authorId, $contributors, $packageId, $version, $title, $subject)
 {
     // 1. Convert DOCX → HTML
     $htmlPath = $processingDir . "/converted.html";
@@ -55,12 +55,16 @@ function buildPackage($inputPath, $processingDir, $authorId, $contributors)
     $xml = new SimpleXMLElement('<manifest/>');
     $metadata = $xml->addChild('metadata');
 
-    $metadata->addChild('title', 'Sample Lesson');
+    $metadata->addChild('title', $title);
+	$metadata->addChild('subject', $subject);
     $metadata->addChild('format', 'MoRe');
     $metadata->addChild('formatVersion', '1.0');
     $metadata->addChild('formatCreator', 'Mahnnie Tolentino');
     $metadata->addChild('generator', 'MoRe Studio');
     $metadata->addChild('created', date('Y-m-d'));
+	$metadata->addChild('authorId', $authorId);
+	$metadata->addChild('packageId', $packageId);
+	$metadata->addChild('version', $version);
 
 	$contributorsNode = $xml->addChild('contributors');
 

@@ -1,13 +1,14 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+require_once __DIR__ . '/../core/db.php';
 require_once '../core/auth.php';
 requireAuth();
 
 $user = getUser();
 $authorId = $user['author_id'];
 $email = $user['email'];
-
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
 require_once __DIR__ . '/../core/pipeline.php';
 
@@ -68,24 +69,32 @@ $contributors[] = [
     'name' => $email
 ];
 
-function addPeople($string, $role, &$contributors) {
-    $people = array_map('trim', explode(',', $string));
-    foreach ($people as $person) {
-        if (!empty($person)) {
+$contributors = [];
+
+// Owner (always included)
+$contributors[] = [
+    'role' => 'author',
+    'id' => $authorId,
+    'name' => $email
+];
+
+// Dynamic contributors
+if (!empty($_POST['contributors'])) {
+    foreach ($_POST['contributors'] as $person) {
+        if (!empty($person['name']) && !empty($person['role'])) {
             $contributors[] = [
-                'role' => $role,
-                'name' => $person
+                'role' => $person['role'],
+                'name' => $person['name']
             ];
         }
     }
 }
 
-addPeople($_POST['authors'] ?? '', 'author', $contributors);
-addPeople($_POST['editors'] ?? '', 'editor', $contributors);
-addPeople($_POST['artists'] ?? '', 'artist', $contributors);
+$title = $_POST['title'] ?? 'Untitled Package';
+$subject = $_POST['subject'] ?? 'general';
 
 // ✅ SINGLE correct call
-$result = runPipeline($destination, $authorId, $contributors);
+$result = runPipeline($destination, $authorId, $contributors, $title, $subject, $conn);
 
 // 10. Handle pipeline result
 if (!$result['success']) {
