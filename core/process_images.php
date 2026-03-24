@@ -1,59 +1,57 @@
 <?php
 function processImages($html, $basePath) {
 
-    $counter = 1;
+$counter = 0;
+$index = 1;
 
-    return preg_replace_callback('/<img[^>]*src="([^"]+)"[^>]*>/is', function ($matches) use ($basePath, &$counter) {
+$html = preg_replace_callback('/<img[^>]*src="([^"]+)"[^>]*>/is', function ($matches) use ($basePath, &$counter, &$index) {
 
-        $src = $matches[1];
+    $src = $matches[1];
 
-// Resolve path properly
-$originalPath = dirname(__FILE__) . '/' . ltrim($src, './');
-
-echo "IMG SRC: $src\n";
-echo "Resolved: $originalPath\n";
-echo file_exists($originalPath) ? "✅ FOUND\n\n" : "❌ NOT FOUND\n\n";
-
-if (!file_exists($originalPath)) {
-    $originalPath = __DIR__ . '/' . ltrim($src, './');
+    // input (from pandoc)
+    if (strpos($src, '/') === 0) {
+    // absolute path → use directly
+    $originalPath = $src;
+} else {
+    // relative path → resolve normally
+    $originalPath = $basePath . ltrim($src, './');
 }
 
-        $newName = "img" . $counter . ".jpg";
-        $newPath = $basePath . "assets/" . $newName;
+    // output (your system)
+    $newName = uniqid('img_', true) . ".jpg";
+	$newPath = $basePath . "assets/" . $newName;
+
+    $finalSrc = "../media/" . basename($src); // fallback
+
+    if (file_exists($originalPath)) {
 
         $cmd = "convert " . escapeshellarg($originalPath) .
-               " -quality 70 " .
-               escapeshellarg($newPath);
+       " -auto-orient -strip -quality 70 JPG:" .
+       escapeshellarg($newPath);
+       
+        exec($cmd . " 2>&1", $output, $returnCode);
 
-        exec($cmd, $output, $returnCode);
-
-        if ($returnCode !== 0) {
-            echo "❌ ImageMagick failed\n";
-            return $matches[0];
+        if ($returnCode === 0) {
+            $finalSrc = "../assets/" . $newName;
+            $counter++;
         }
+    }
 
-        echo "✅ Image optimized: $newName\n";
+    $index++;
 
-        $counter++;
+    $imgTag = $matches[0];
 
-        // Replace src
-        $imgTag = $matches[0];
+    $imgTag = preg_replace('/src="[^"]+"/', 'src="' . $finalSrc . '"', $imgTag);
+    $imgTag = preg_replace('/\s*style="[^"]*"/i', '', $imgTag);
+    $imgTag = preg_replace('/\s*(width|height)="[^"]*"/i', '', $imgTag);
 
-// 1. Replace src
-$imgTag = preg_replace(
-    '/src="[^"]+"/',
-    'src="../assets/' . $newName . '"',
-    $imgTag
-);
+    return $imgTag;
 
-// 2. Remove style attribute (width/height)
-$imgTag = preg_replace('/\s*style="[^"]*"/i', '', $imgTag);
+}, $html);
 
-// 3. Optional: remove width/height attributes if present
-$imgTag = preg_replace('/\s*(width|height)="[^"]*"/i', '', $imgTag);
-
-return $imgTag;
-
-    }, $html);
+return [
+    'html' => $html,
+    'count' => $counter
+];
 }
 ?>

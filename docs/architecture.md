@@ -1,6 +1,12 @@
-r-authored DOCX file into a structured **MoRe Learning Package (.more)**.
+# MoRe Studio v0.1 — Architecture
 
-It acts as a **compiler for educational content**, converting unstructured documents into structured, machine-readable learning assets.--
+## 1. Overview
+
+MoRe Studio is a server-side system that transforms a teacher-authored DOCX file into a structured **MoRe Learning Package (.more)**.
+
+It acts as a **compiler for educational content**, converting unstructured documents into structured, machine-readable learning assets.
+
+---
 
 ## 2. System Layers
 
@@ -164,4 +170,26 @@ Each service has a single responsibility.
 
 ### 7.4 Teacher-Centric Input
 
-Teachers only nee
+Teachers only need to:
+
+* Upload DOCX
+* Follow simple tagging rules
+
+---
+
+## 8. Future Considerations
+
+* Build queue system
+* Version comparison
+* Live preview of parsed content
+* Validation before build
+* Distributed processing
+
+---
+
+## 9. Summary
+
+MoRe Studio transforms traditional documents into structured, portable learning systems.
+
+It serves as the **foundation of the MoRe ecosystem**, enabling scalable, offline-capable education delivery.
+

@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 require_once __DIR__ . '/../core/db.php';
 require_once '../core/auth.php';
 requireAuth();
@@ -110,10 +107,7 @@ $moreFilePath = $result['file'];
 $moreFileName = basename($moreFilePath);
 
 // 12. Output response
-echo "<h3>✅ Processing Complete</h3>";
-echo "<p>Your file is ready.</p>";
 $jobId = basename(dirname($moreFilePath));
-
-echo "<a href='download.php?file=" . urlencode($moreFileName) . "&job=" . urlencode($jobId) . "'>Download</a>";
-
+header("Location: processing.php?done=1&file=" . urlencode($moreFileName) . "&job=" . urlencode($jobId));
+exit;
 ?>

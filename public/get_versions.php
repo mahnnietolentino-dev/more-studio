@@ -20,7 +20,29 @@ $stmt->execute();
 
 $result = $stmt->get_result();
 
-while ($row = $result->fetch_assoc()) {
-    echo "Version " . $row['version'] . " - " . $row['created_at'] . "<br>";
-}
+?>
+<?php
+$isFirst = true;
+
+while ($row = $result->fetch_assoc()):
+?>
+
+<div style="padding:10px 0; border-bottom:1px solid #eee;">
+
+  <strong>
+    v<?= $row['version'] ?>
+    <?php if ($isFirst): ?>
+      <span style="font-size:12px; color:#777;"> — Latest</span>
+    <?php endif; ?>
+  </strong>
+
+  <div style="font-size:12px; color:#777;">
+    Created: <?= $row['created_at'] ?>
+  </div>
+
+</div>
+
+<?php 
+$isFirst = false;
+endwhile;
 ?>

@@ -22,6 +22,7 @@ function buildPackage($inputPath, $processingDir, $authorId, $contributors, $pac
 
     // 2. Parse chapters
     $chapters = parseChapters($htmlPath);
+    $chapterCount = count($chapters);
 
     // 3. Create folders
     $base = $processingDir . "/";
@@ -31,11 +32,15 @@ function buildPackage($inputPath, $processingDir, $authorId, $contributors, $pac
     if (!is_dir($base . "assets")) mkdir($base . "assets", 0777, true);
 
     // 4. Process each chapter
+    $assessmentCount = 0;
+    $imageCount = 0;
     foreach ($chapters as $index => $ch) {
 
         $num = $index + 1;
 
-        $processedHtml = processImages($ch["content"], $base);
+        $imageResult = processImages($ch["content"], $base);
+		$processedHtml = $imageResult['html'];
+		$imageCount += $imageResult['count'];
 		$cleanHtml = replaceQuizBlocks($processedHtml, $num);
 
 		// 🔥 FINAL CLEAN (DOM-based)
@@ -44,6 +49,7 @@ function buildPackage($inputPath, $processingDir, $authorId, $contributors, $pac
 		file_put_contents($base . "chapters/ch{$num}.html", $cleanHtml);
 
         $quizzes = parseQuizFromHtml($ch["content"]);
+		$assessmentCount += count($quizzes);
 
         file_put_contents(
             $base . "quizzes/ch{$num}.json",
@@ -151,6 +157,7 @@ function buildPackage($inputPath, $processingDir, $authorId, $contributors, $pac
 			) continue;
 
             $relativePath = str_replace($baseRealPath, '', $filePath);
+            if (strpos($relativePath, 'media/') === 0) continue;
 
             $zip->addFile($filePath, $relativePath);
         }
@@ -162,10 +169,15 @@ function buildPackage($inputPath, $processingDir, $authorId, $contributors, $pac
     $morePath = $base . "lesson.more";
     rename($zipPath, $morePath);
 
-    return [
-        'success' => true,
-        'file' => $morePath
-    ];
+return [
+    'success' => true,
+    'file' => $morePath,
+    'stats' => [
+        'chapters' => $chapterCount,
+        'assessments' => $assessmentCount,
+        'images' => $imageCount
+    ]
+];
 }
 
 
