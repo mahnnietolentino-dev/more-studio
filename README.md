@@ -21,7 +21,7 @@ Create (DOCX) → Upload → Process → Download (.more) → Use in MoRe Contai
 
 ---
 
-## Database
+## 💾 Database
 
 Import the database structure before running the application.
 
