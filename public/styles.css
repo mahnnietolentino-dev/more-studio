@@ -110,8 +110,17 @@ label {
   color: #444;
 }
 
-input, select {
-  width: 100%;
+input {
+  width: 95%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  background: #fff;
+}
+
+select {
+  width: 98%;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ddd;

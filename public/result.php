@@ -34,15 +34,22 @@ $images = $_GET['i'] ?? 0;
   font-size:13px;
   color:#777;
 ">
-  Hello, <?= htmlspecialchars($user['email']) ?> | 
-  <a href="logout.php" style="margin-left:2px; text-decoration:none;">
-  Logout
+Hello, <?= htmlspecialchars($user['email']) ?> | 
+
+<a href="#" onclick="openHelp(); return false;" style="margin:0 5px;">Guide</a> | 
+
+<a href="#" onclick="openPackages(); return false;" style="margin:0 5px;">
+Packages
+</a> | 
+
+<a href="logout.php" style="margin-left:5px;">
+Logout
 </a>
 </div>
 
   <!-- FLOW -->
   <p style="font-size:13px; color:#777; margin-bottom:20px;">
-    Dashboard → Studio → Processing → <strong>Output</strong>
+    Studio → Processing → <strong>Output</strong>
   </p>
 
   <h2>Package Ready</h2>
@@ -68,16 +75,17 @@ $images = $_GET['i'] ?? 0;
 
 </div>
 
-    <!-- ACTION -->
-    <div style="margin-top:20px;">
-      <a href="download.php?file=<?= urlencode($file) ?>&job=<?= urlencode($job) ?>" class="button">
-        Download Package
-      </a>
-    </div>
+<div style="margin-top:25px; display:flex; gap:10px; justify-content:flex-start;">
 
-    <div style="margin-top:15px;">
-      <a href="studio.php" style="font-size:13px;">Create Another</a>
-    </div>
+  <a href="download.php?file=<?= urlencode($file) ?>&job=<?= urlencode($job) ?>" class="button">
+    Download Package
+  </a>
+
+  <a href="studio.php" class="button" style="background:#eee; color:#333;">
+    New Upload
+  </a>
+
+</div>
 
   </div>
 
@@ -97,6 +105,165 @@ $images = $_GET['i'] ?? 0;
     Licensed under 
     <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a>
   </p>
+  </div>
+</div>
+<div id="helpModal" style="
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  background:#fff;
+  padding:25px;
+  border-radius:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+  z-index:1000;
+  max-width:500px;
+  width:90%;
+  max-height:80vh;
+  overflow:auto;
+">
+
+  <h3 style="margin-bottom:10px;">Next Steps</h3>
+
+  <p style="font-size:13px; color:#555; margin-bottom:15px;">
+    Your package is ready. Follow these steps to use it on your device.
+  </p>
+
+  <!-- STEP 1 -->
+  <h4 style="margin:10px 0 5px;">1. Rename Your Package</h4>
+  <p style="font-size:13px; color:#555;">
+    After downloading, you may rename the file to match your lesson title.
+  </p>
+
+  <pre style="background:#f6f6f6; padding:10px; border-radius:6px;">
+example.more → Math_Lesson_1.more
+</pre>
+
+  <!-- STEP 2 -->
+  <h4 style="margin:15px 0 5px;">2. Save to Your Device</h4>
+  <p style="font-size:13px; color:#555;">
+    Move the file to your phone's storage. Place it in a folder where your learning app can access files.
+  </p>
+
+  <!-- STEP 3 -->
+  <h4 style="margin:15px 0 5px;">3. Open in MoRe Container</h4>
+  <p style="font-size:13px; color:#555;">
+    Open your MoRe learning app. It will automatically detect available <strong>.more</strong> packages from your device.
+  </p>
+
+  <p style="font-size:12px; color:#777; margin-top:10px;">
+    Tip: If the file is not detected, make sure it is saved in your device storage (not inside Downloads only).
+  </p>
+
+  <!-- CLOSE -->
+  <div style="text-align:right; margin-top:20px;">
+    <button onclick="closeHelp()" class="button">Close</button>
+  </div>
+
+</div>
+
+<div id="packagesModal" style="
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+  z-index:1000;
+  width:90%;
+  max-width:700px;
+  max-height:80vh;
+  overflow:auto;
+">
+
+  <h3 style="margin-bottom:10px;">Package Library</h3>
+
+<input 
+  type="text" 
+  id="packageSearch"
+  placeholder="Search by title..."
+  style="margin-bottom:10px; width:95%;"
+  oninput="searchPackages()"
+>
+
+  <div id="packagesContent">
+    Loading...
+  </div>
+
+  <div style="text-align:right; margin-top:15px;">
+    <button onclick="closePackages()" class="button">Close</button>
+  </div>
+
+</div>
+
+<div id="modalOverlay" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.2);
+  z-index:999;
+"></div>
+
+<script>
+window.onload = function() {
+  openHelp();
+};
+
+function openHelp() {
+  document.getElementById("helpModal").style.display = "block";
+  document.getElementById("modalOverlay").style.display = "block";
+}
+
+function closeHelp() {
+  document.getElementById("helpModal").style.display = "none";
+  document.getElementById("modalOverlay").style.display = "none";
+}
+
+function loadPackages(page = 1) {
+  const q = document.getElementById("packageSearch")?.value || '';
+
+  fetch('get_packages.php?page=' + page + '&q=' + encodeURIComponent(q))
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("packagesContent").innerHTML = html;
+    });
+}
+
+function openPackages() {
+  document.getElementById("packagesModal").style.display = "block";
+  document.getElementById("modalOverlay").style.display = "block";
+
+  loadPackages(1);
+}
+
+function closePackages() {
+  document.getElementById("packagesModal").style.display = "none";
+  document.getElementById("modalOverlay").style.display = "none";
+}
+
+function searchPackages() {
+  const q = document.getElementById("packageSearch").value;
+
+  fetch('get_packages.php?q=' + encodeURIComponent(q))
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("packagesContent").innerHTML = html;
+    });
+}
+
+// Optional: click outside to close
+document.getElementById("modalOverlay").onclick = function() {
+  closeHelp();
+  closePackages();
+};
+</script>
 
 </body>
 </html>

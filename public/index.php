@@ -27,7 +27,7 @@
       ready for delivery across learning environments.
     </p>
 
-    <a href="dashboard.php" class="button">Open Studio</a>
+    <a href="studio.php" class="button">Open Studio</a>
 
   </div>
 

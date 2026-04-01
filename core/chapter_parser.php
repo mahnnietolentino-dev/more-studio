@@ -49,7 +49,10 @@ function buildPackage($inputPath, $processingDir, $authorId, $contributors, $pac
 		file_put_contents($base . "chapters/ch{$num}.html", $cleanHtml);
 
         $quizzes = parseQuizFromHtml($ch["content"]);
-		$assessmentCount += count($quizzes);
+		//$assessmentCount += count($quizzes);
+		foreach ($quizzes as $quizBlock) {
+		    $assessmentCount += count($quizBlock['questions']);
+		}
 
         file_put_contents(
             $base . "quizzes/ch{$num}.json",
