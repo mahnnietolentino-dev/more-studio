@@ -32,8 +32,6 @@ Import the database structure before running the application.
 4. Upload `/database/database.sql`
 
 ### Option 2 — MySQL CLI
-
-```bash
 mysql -u root -p < database/database.sql
 
 ### Database Connection
