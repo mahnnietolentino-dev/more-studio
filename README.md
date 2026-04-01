@@ -21,6 +21,26 @@ Create (DOCX) → Upload → Process → Download (.more) → Use in MoRe Contai
 
 ---
 
+## Database
+
+Import the database structure before running the application.
+
+### Option 1 — phpMyAdmin
+1. Open phpMyAdmin
+2. Create a database (e.g. `more_studio`)
+3. Go to **Import**
+4. Upload `/database/database.sql`
+
+### Option 2 — MySQL CLI
+
+```bash
+mysql -u root -p < database/database.sql
+
+### Database Connection
+$conn = new mysqli("localhost", "root", "", "more_studio");
+
+---
+
 ## ✨ Features
 
 ### 📄 Content Processing Pipeline
