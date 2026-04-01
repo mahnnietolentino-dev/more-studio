@@ -1,24 +1,140 @@
-# MoRe Studio v0.9
+# 🚀 MoRe Studio — v1.0
 
-MoRe Studio is the authoring and packaging server for MoRe Learning Packages (.more).
+MoRe Studio is a web-based authoring tool that converts structured `.docx` learning materials into `.more` packages for use in the MoRe learning container.
 
-## Purpose
-To allow teachers to convert a full DOCX book into a structured, interactive learning package.
+---
 
-## Features (v0.1)
-- Upload DOCX
-- Detect chapters (Heading 1)
-- Parse quizzes ([MCQ], [SHORT], [TF])
-- Convert to HTML (Pandoc)
-- Generate .more package
+## 🎯 Overview
 
-## Status
-Initial setup phase
+MoRe Studio enables educators to:
 
-## Author
-Mahnnie Tolentino
+- Create structured learning content using familiar tools (Microsoft Word)
+- Define assessments using simple markup
+- Generate portable `.more` packages
+- Deploy content to mobile learning environments
+
+---
+
+## 🔁 Workflow
+
+Create (DOCX) → Upload → Process → Download (.more) → Use in MoRe Container
+
+---
+
+## ✨ Features
+
+### 📄 Content Processing Pipeline
+- DOCX → HTML conversion (Pandoc)
+- Chapter detection via headings (H1)
+- Structured content packaging
+- Quiz extraction:
+  - MCQ (Multiple Choice)
+  - TF (True/False)
+  - SHORT (Short Answer)
+- Image extraction and optimization
+- Final `.more` package generation
+
+---
+
+### 🧠 Guided Authoring Interface
+- Clean Studio UI for content submission
+- Metadata input:
+  - Title
+  - Subject
+  - Contributors
+- Inline contributor management (+ / ✕)
+- Built-in Authoring Guide (modal)
+- Sample `.docx` template download
+
+---
+
+### ✅ Validation (v1)
+- Required field checks
+- File type restriction (`.docx` only)
+- Contributor presence validation
+- Guided error feedback via dialog
+
+---
+
+### 📦 Results & Deployment
+- Package summary:
+  - Chapters detected
+  - Assessment items
+  - Images extracted
+- Download-ready `.more` file
+- Post-processing guidance for mobile usage
+- Rename + storage instructions
+
+---
+
+### 📚 Package Library
+- Integrated modal-based package viewer
+- Search by title
+- Pagination (Prev / Next)
+- Version tracking per package
+
+---
+
+### 🧩 UI System
+- Minimal, focused interface
+- Unified modal system (Guide + Packages)
+- Click-outside-to-close behavior
+- Inline navigation:
+  - Guide
+  - Packages
+  - Logout
+
+---
+
+## 🧾 Authoring Format
+
+### 📘 Chapter Structure
+
+Use **Heading 1** in your `.docx` file:
 
 # Version Updates
+## v1.0
+feat: release MoRe Studio v1.0 with complete DOCX-to-.more pipeline, guided authoring UI, and integrated package management
+
+- Finalize full processing pipeline:
+  DOCX → HTML → structured chapters → quiz parsing → image processing → .more packaging
+
+- Implement guided Studio interface:
+  - metadata input (title, subject, contributors)
+  - inline contributor management (+ / ✕ controls)
+  - file validation (.docx restriction)
+  - step-by-step authoring guide (modal)
+  - sample DOCX download support
+
+- Add validation layer (v1):
+  - required field checks
+  - file type enforcement
+  - contributor presence validation
+
+- Integrate Results page:
+  - package summary (chapters, assessments, images)
+  - download flow
+  - next-step guidance for mobile usage
+  - unified modal system (Guide + Packages)
+
+- Replace dashboard with embedded Package Library:
+  - modal-based package browsing
+  - search functionality
+  - pagination (Prev / Next)
+  - version viewing support
+
+- Standardize modal system:
+  - shared overlay
+  - click-outside-to-close behavior
+  - reusable across Studio and Results
+
+- Improve UX consistency:
+  - inline navigation (Guide | Packages | Logout)
+  - refined button hierarchy and layout
+  - minimal, guided interface
+
+This release establishes MoRe Studio as a complete, production-ready authoring tool for generating .more learning packages.
+
 ## v0.9.0
 feat: complete end-to-end processing pipeline with image handling, packaging, and result validation
 
