@@ -11,7 +11,7 @@
   <div class="card" style="padding:60px 20px; max-width:700px; margin:auto;">
 
     <p style="font-size:12px; color:#777; margin-bottom:10px;">
-      MoRe Studio v0.1
+      MoRe Studio v1.0
     </p>
 
     <h1>MoRe Standard</h1>

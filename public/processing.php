@@ -144,7 +144,11 @@ function nextStep() {
   $stats = $resultData['stats'];
 ?>
 
-window.location.href = "result.php?file=<?= $file ?>&job=<?= $job ?>&c=<?= $stats['chapters'] ?>&a=<?= $stats['assessments'] ?>&i=<?= $stats['images'] ?>";
+<?php 
+$warningsEncoded = urlencode(json_encode($resultData['warnings'] ?? []));
+?>
+
+window.location.href = "result.php?file=<?= $file ?>&job=<?= $job ?>&c=<?= $stats['chapters'] ?>&a=<?= $stats['assessments'] ?>&i=<?= $stats['images'] ?>&w=<?= $warningsEncoded ?>";
 
 <?php else: ?>
 console.error("No result data available");

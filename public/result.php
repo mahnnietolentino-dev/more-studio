@@ -7,6 +7,12 @@ $user = getUser();
 $file = $_GET['file'] ?? null;
 $job = $_GET['job'] ?? null;
 
+$warnings = [];
+
+if (isset($_GET['w'])) {
+    $warnings = json_decode($_GET['w'], true) ?? [];
+}
+
 if (!$file || !$job) {
     die("Invalid request.");
 }
@@ -57,6 +63,21 @@ Logout
   <p style="font-size:13px; color:#777; margin-bottom:20px;">
     Your material has been successfully structured under the MoRe Standard.
   </p>
+
+<?php if (!empty($warnings)): ?>
+<div style="margin-top:20px; padding:15px; background:#fff3cd; border-radius:8px; color:#856404;">
+  <strong>Warnings Detected</strong>
+  <ul style="margin-top:10px;">
+    <?php foreach ($warnings as $w): ?>
+      <li>
+        Chapter <?= $w['chapter'] ?>:
+        <?= implode(', ', $w['issues']) ?>
+      </li>
+    <?php endforeach; ?>
+  </ul>
+</div>
+<?php endif; ?>
+
 
     <!-- SUMMARY -->
     <div style="text-align:left; margin-bottom:25px;">

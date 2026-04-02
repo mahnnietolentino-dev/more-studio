@@ -4,7 +4,7 @@ function parseQuizFromHtml($html)
     $quizBlocks = [];
 
     // 1. Extract QUIZ blocks
-    preg_match_all('/\[QUIZ\](.*?)\[\/QUIZ\]/s', $html, $blocks);
+    preg_match_all('/\[QUIZ\]((?:(?!\[QUIZ\]).)*?)\[\/QUIZ\]/s', $html, $blocks);
 
     foreach ($blocks[1] as $block) {
 

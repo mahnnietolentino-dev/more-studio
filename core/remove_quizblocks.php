@@ -1,18 +1,20 @@
 <?php
-function replaceQuizBlocks($html, $chapterNum)
-{
-    $index = 0;
+function replaceQuizBlocks($html, $chapterNum) {
 
-    return preg_replace_callback(
-        '/<p>\s*\[QUIZ\](.*?)\[\/QUIZ\]\s*<\/p>/s',
-        function ($matches) use ($chapterNum, &$index) {
+    $quizIndex = 1;
 
-            $index++;
+    return preg_replace_callback('/\[QUIZ\].*?\[\/QUIZ\]/s', function () use ($chapterNum, &$quizIndex) {
 
-            return '<div class="quiz" data-src="../quizzes/ch' 
-                . $chapterNum . '.json" data-index="' . $index . '"></div>';
-        },
-        $html
-    );
+        $file = "quiz_" . $chapterNum . "_" . $quizIndex . ".json";
+
+        $quizIndex++;
+
+        return '
+        <div class="quiz-block">
+            <a href="../quizzes/' . $file . '">Start Quiz</a>
+        </div>
+        ';
+
+    }, $html);
 }
 ?>

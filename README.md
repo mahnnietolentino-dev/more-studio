@@ -1,4 +1,4 @@
-# 🚀 MoRe Studio — v1.0
+# 🚀 MoRe Studio — v1.1
 
 MoRe Studio is a web-based authoring tool that converts structured `.docx` learning materials into `.more` packages for use in the MoRe learning container.
 
@@ -110,7 +110,127 @@ $conn = new mysqli("localhost", "root", "", "more_studio");
 
 Use **Heading 1** in your `.docx` file:
 
-# Version Updates
+## 🆕 v1.1 — Content Stability & QA Feedback
+
+MoRe Studio v1.1 introduces a **deterministic content contract** and a **lightweight validation layer** to improve reliability and authoring feedback.
+
+---
+
+### 🔗 Quiz Linking System (Deterministic Contract)
+
+- Each `[QUIZ]...[/QUIZ]` block is now:
+  - Extracted into an individual JSON file  
+    ```
+    /quizzes/quiz_{chapter}_{index}.json
+    ```
+  - Replaced in HTML with:
+    ```html
+    <div class="quiz-block">
+      <a href="../quizzes/quiz_X_Y.json">Start Quiz</a>
+    </div>
+    ```
+
+**Ensures:**
+- 1 quiz block → 1 JSON file  
+- 1 UI trigger → 1 data source  
+- No runtime ambiguity in the container  
+
+---
+
+### 🖼 Image Optimization Pipeline
+
+All images are automatically processed during packaging:
+
+- Max width: **1024px** (no upscaling)
+- Format: **JPG**
+- Quality: **70%**
+- Transparency handling (PNG → white background)
+- Inline styles and dimensions removed
+
+**Results:**
+- Smaller file size  
+- Mobile-ready assets  
+- Consistent rendering  
+
+---
+
+### ⚠️ Minimal Validation Layer (Non-blocking)
+
+MoRe Studio now detects structural issues in quiz markup:
+
+- Mismatched `[QUIZ]`, `[MCQ]`, `[TF]`, `[SHORT]` tags
+- Potential malformed assessment blocks
+
+Validation is:
+
+- Non-blocking (processing continues)
+- Visible to QA via warnings
+- Not auto-corrected (intent preserved)
+
+**Example warning:**
+Chapter 1: Mismatched [MCQ] tags (5 vs 4)
+
+
+---
+
+### 🔍 QA Feedback Integration
+
+- Validation warnings are passed through the pipeline
+- Displayed in the Results page
+- Enables faster QA review and correction
+
+---
+
+### 🧠 Parsing Stability Improvements
+
+- Prevents merging of nested or malformed quiz blocks
+- Uses safer extraction logic to isolate `[QUIZ]` sections
+- Ensures consistent JSON output even with imperfect input
+
+---
+
+### 🧩 Design Philosophy
+
+MoRe Studio v1.1 follows:
+
+> **“Guardrails + Human QA”**
+
+- The system detects structural risks  
+- QA ensures content quality and intent  
+
+---
+
+# ✨ Version Update
+
+## v1.1
+feat: introduce deterministic quiz linking, image optimization, and QA-visible validation layer
+
+- Implement quiz linking system:
+  - split quiz blocks into individual JSON files
+  - replace [QUIZ] blocks with explicit HTML links
+  - enforce 1-to-1 mapping (UI trigger → data file)
+
+- Add image optimization pipeline:
+  - resize to max 1024px (no upscaling)
+  - convert to JPG (70% quality)
+  - handle PNG transparency (white background)
+  - remove inline styles and dimensions
+
+- Introduce minimal validation layer:
+  - detect mismatched [QUIZ], [MCQ], [TF], [SHORT] tags
+  - prevent silent parsing corruption
+  - non-blocking validation with warning output
+
+- Integrate warning feedback system:
+  - pass validation warnings through pipeline
+  - display in Results UI for QA visibility
+
+- Improve parsing stability:
+  - prevent merging of malformed or nested quiz blocks
+  - ensure consistent JSON output under imperfect input
+
+This update establishes a stable and deterministic content contract, preparing MoRe Studio for container integration.
+
 ## v1.0
 feat: release MoRe Studio v1.0 with complete DOCX-to-.more pipeline, guided authoring UI, and integrated package management
 

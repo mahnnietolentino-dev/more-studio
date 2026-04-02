@@ -34,31 +34,53 @@ function buildPackage($inputPath, $processingDir, $authorId, $contributors, $pac
     // 4. Process each chapter
     $assessmentCount = 0;
     $imageCount = 0;
-    foreach ($chapters as $index => $ch) {
+    $warnings = []; // ✅ ADD THIS before the loop
 
-        $num = $index + 1;
+	foreach ($chapters as $index => $ch) {
 
-        $imageResult = processImages($ch["content"], $base);
-		$processedHtml = $imageResult['html'];
-		$imageCount += $imageResult['count'];
-		$cleanHtml = replaceQuizBlocks($processedHtml, $num);
+    	$num = $index + 1;
 
-		// 🔥 FINAL CLEAN (DOM-based)
-		$cleanHtml = removeAllIds($cleanHtml);
+    	// 🔥 STEP 2: VALIDATE STRUCTURE
+    	$structureIssues = validateQuizStructure($ch["content"]);
 
-		file_put_contents($base . "chapters/ch{$num}.html", $cleanHtml);
+    	if (!empty($structureIssues)) {
+    	    $warnings[] = [
+    	        "chapter" => $num,
+    	        "issues" => $structureIssues
+    	    ];
 
-        $quizzes = parseQuizFromHtml($ch["content"]);
-		//$assessmentCount += count($quizzes);
-		foreach ($quizzes as $quizBlock) {
-		    $assessmentCount += count($quizBlock['questions']);
-		}
+	        error_log("Chapter {$num} issues: " . implode(", ", $structureIssues));
+	    }
 
-        file_put_contents(
-            $base . "quizzes/ch{$num}.json",
-            json_encode($quizzes, JSON_PRETTY_PRINT)
-        );
-    }
+	    // Continue pipeline
+	    $imageResult = processImages($ch["content"], $base);
+	    $processedHtml = $imageResult['html'];
+	    $imageCount += $imageResult['count'];
+
+	    $cleanHtml = replaceQuizBlocks($processedHtml, $num);
+
+	    $cleanHtml = removeAllIds($cleanHtml);
+
+	    file_put_contents($base . "chapters/ch{$num}.html", $cleanHtml);
+
+	    $quizzes = parseQuizFromHtml($ch["content"]);
+
+	    $quizIndex = 1;
+
+	    foreach ($quizzes as $quizBlock) {
+
+	        $assessmentCount += count($quizBlock['questions']);
+
+	        $quizFile = "quiz_" . $num . "_" . $quizIndex . ".json";
+
+	        file_put_contents(
+	            $base . "quizzes/" . $quizFile,
+	            json_encode($quizBlock, JSON_PRETTY_PRINT)
+	        );
+
+	        $quizIndex++;
+	    }
+	}
 
     // 5. Create manifest
     $xml = new SimpleXMLElement('<manifest/>');
@@ -179,7 +201,8 @@ return [
         'chapters' => $chapterCount,
         'assessments' => $assessmentCount,
         'images' => $imageCount
-    ]
+    ],
+    'warnings' => $warnings
 ];
 }
 
@@ -246,5 +269,28 @@ function parseChapters($htmlFile)
     }
 
     return $chapters;
+}
+
+function validateQuizStructure($html) {
+
+    $warnings = [];
+
+    $openQuiz = substr_count($html, '[QUIZ]');
+    $closeQuiz = substr_count($html, '[/QUIZ]');
+
+    if ($openQuiz !== $closeQuiz) {
+        $warnings[] = "Mismatched [QUIZ] tags ($openQuiz vs $closeQuiz)";
+    }
+
+    foreach (['MCQ', 'TF', 'SHORT'] as $type) {
+        $open = substr_count($html, "[$type]");
+        $close = substr_count($html, "[/$type]");
+
+        if ($open !== $close) {
+            $warnings[] = "Mismatched [$type] tags ($open vs $close)";
+        }
+    }
+
+    return $warnings;
 }
 ?>
