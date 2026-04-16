@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>MoRe Studio</title>
+  <title>MORE Studio</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -9,42 +9,54 @@
 <div class="container">
 
   <div class="card" style="padding:60px 20px; max-width:700px; margin:auto;">
+  <div style="
+  position:absolute;
+  top:20px;
+  right:20px;
+  font-size:13px;
+  color:#777;
+"><a href="docs/more_standard.md" style="margin:0 5px;">Standard</a> | 
+<a href="docs/contributors.md" style="margin:0 5px;">Contributors</a> | 
+<a href="docs/disclaimer.md" style="margin-left:5px;">Disclaimer</a>
+</div>
+
 
     <p style="font-size:12px; color:#777; margin-bottom:10px;">
-      MoRe Studio v1.0
+      MORE Studio v1.1
     </p>
 
-    <h1>MoRe Standard</h1>
+    <h1>MORE Standard</h1>
 
     <p style="margin:20px 0;">
-      MoRe Studio is a compiler for educational content.
-      It transforms DOCX materials into structured, machine-readable learning packages (.more).
+      MORE is an open standard for packaging and delivering educational content. No single entity owns or controls the MORE standard.
     </p>
 
-    <p style="margin-bottom:30px;">
-      The system defines a consistent process:
-      upload, structure, and package content into a portable format
-      ready for delivery across learning environments.
+    <p style="margin-bottom:20px;">
+      Create structured, offline-ready learning packages from DOCX files.
     </p>
 
-    <a href="studio.php" class="button">Open Studio</a>
+    <p style="margin-bottom:20px;">
+	MORE Studio converts your materials into portable, offline-ready packages that can be opened in compatible learning apps.
+	<ol>
+	<li>Upload your document</li>
+	<li>Structure content and assessments</li>
+	<li>Download a .more package</li>
+	</ol>
+    </p>
+
+    <div class="action-buttons">
+      <a href="studio.php" class="btn primary">Open Studio</a>
+      <a href="app/" class="btn secondary">Download App Reader</a>
+    </div>
 
   </div>
 
   <!-- FOOTER -->
   <div style="text-align:center; margin-top:20px; font-size:12px; color:#777;">
-
-  <div style="margin-bottom:0px;">
-    <img src="images/deped-logo.png" alt="DepEd" style="height:34px; opacity:0.7; margin:0 10px;">
-    <img src="images/deped-aklan-logo.jpg" alt="DepEd Aklan" style="height:34px; opacity:0.7; margin:0 10px;">
-  </div>
-
-  <p>Standard developed by Mahnnie Q. Tolentino
-  <br><a href = "https://home.depedaklan.online">Department of Education - Division of Aklan</a>
-  <br>Training supported by Benita and Catalino Yap Foundation (BCYF)
+  <p>MORE is an open learning package standard.
+  <br>This implementation is provided as open-source software.
   <br>
-    Licensed under 
-    <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a>
+    <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">Licensed under GNU GPL v3</a>
   </p>
 
 </div>

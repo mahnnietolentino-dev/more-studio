@@ -88,6 +88,6 @@ $_SESSION['user'] = [
 ];
 
 // Redirect to main app
-header("Location: index.php");
+header("Location: studio.php");
 exit;
 ?>

@@ -41,7 +41,7 @@ Logout
 
   <!-- FLOW -->
   <p style="font-size:13px; color:#777; margin-bottom:20px;">
-    <strong>Studio</strong> → Processing → Output
+    <a href="index.php">Home</a> →  <strong style="text-decoration:underline;">Studio</strong> → Processing → Output
   </p>
 
   <h2>Create Learning Package</h2>
@@ -144,18 +144,14 @@ Logout
 
   <!-- FOOTER -->
   <div style="text-align:center; margin-top:20px; font-size:12px; color:#777;">
-
-  <div style="margin-bottom:0px;">
-    <img src="images/deped-logo.png" alt="DepEd" style="height:34px; opacity:0.7; margin:0 10px;">
-    <img src="images/deped-aklan-logo.jpg" alt="DepEd Aklan" style="height:34px; opacity:0.7; margin:0 10px;">
-  </div>
-
-  <p>Standard developed by Mahnnie Q. Tolentino
-  <br><a href = "https://home.depedaklan.online">Department of Education - Division of Aklan</a>
-  <br>Training supported by Benita and Catalino Yap Foundation (BCYF)
+  <p>MORE is an open learning package standard.
+  <br>This implementation is provided as open-source software.
+  <p>
+  <a href="docs/more_standard.md" style="margin:0 5px;">Standard</a> | 
+<a href="docs/contributors.md" style="margin:0 5px;">Contributors</a> | 
+<a href="docs/disclaimer.md" style="margin-left:5px;">Disclaimer</a>
   <br>
-    Licensed under 
-    <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a>
+    <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">Licensed under GNU GPL v3</a>
   </p>
 
 

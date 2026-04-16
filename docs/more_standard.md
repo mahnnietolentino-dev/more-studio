@@ -1,4 +1,4 @@
-# MORE Standard v1.0
+# MORE Standard v1.1
 
 ## Overview
 
@@ -7,6 +7,8 @@ MORE (Mobile Online Resources for Education) is an open standard for packaging e
 A MORE package is a `.more` file containing content, assessments, and assets organized in a predictable structure.
 
 MORE is designed to work fully offline and requires no external dependencies.
+
+License: Creative Commons Attribution 4.0 International (CC-BY-4.0)
 
 ---
 
@@ -203,4 +205,4 @@ Commercial services may exist but are not required to use the standard.
 
 ## Version
 
-Current Version: 1.0
+Current Version: 1.1

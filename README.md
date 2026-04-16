@@ -1,12 +1,31 @@
-# 🚀 MoRe Studio — v1.1
+# 🚀 MORE Studio — v1.1
 
-MoRe Studio is a web-based authoring tool that converts structured `.docx` learning materials into `.more` packages for use in the MoRe learning container.
+MORE Studio is a web-based authoring tool that converts structured `.docx` learning materials into `.more` packages for use in the MORE learning container.
+
+---
+
+## About MORE
+
+MORE is an open standard for packaging and delivering educational content in low-connectivity environments.
+
+It enables educators to transform documents into structured, portable learning packages.
+
+No single entity owns or controls the MORE standard.
+
+This repository provides a reference implementation.
+
+---
+
+## License
+
+- Code: GPL v3
+- Standard and documentation: CC-BY 4.0
 
 ---
 
 ## 🎯 Overview
 
-MoRe Studio enables educators to:
+MORE Studio enables educators to:
 
 - Create structured learning content using familiar tools (Microsoft Word)
 - Define assessments using simple markup
@@ -17,7 +36,7 @@ MoRe Studio enables educators to:
 
 ## 🔁 Workflow
 
-Create (DOCX) → Upload → Process → Download (.more) → Use in MoRe Container
+Create (DOCX) → Upload → Process → Download (.more) → Use in MORE Container
 
 ---
 
@@ -112,7 +131,7 @@ Use **Heading 1** in your `.docx` file:
 
 ## 🆕 v1.1 — Content Stability & QA Feedback
 
-MoRe Studio v1.1 introduces a **deterministic content contract** and a **lightweight validation layer** to improve reliability and authoring feedback.
+MORE Studio v1.1 introduces a **deterministic content contract** and a **lightweight validation layer** to improve reliability and authoring feedback.
 
 ---
 
@@ -156,7 +175,7 @@ All images are automatically processed during packaging:
 
 ### ⚠️ Minimal Validation Layer (Non-blocking)
 
-MoRe Studio now detects structural issues in quiz markup:
+MORE Studio now detects structural issues in quiz markup:
 
 - Mismatched `[QUIZ]`, `[MCQ]`, `[TF]`, `[SHORT]` tags
 - Potential malformed assessment blocks
@@ -191,7 +210,7 @@ Chapter 1: Mismatched [MCQ] tags (5 vs 4)
 
 ### 🧩 Design Philosophy
 
-MoRe Studio v1.1 follows:
+MORE Studio v1.1 follows:
 
 > **“Guardrails + Human QA”**
 
@@ -229,10 +248,10 @@ feat: introduce deterministic quiz linking, image optimization, and QA-visible v
   - prevent merging of malformed or nested quiz blocks
   - ensure consistent JSON output under imperfect input
 
-This update establishes a stable and deterministic content contract, preparing MoRe Studio for container integration.
+This update establishes a stable and deterministic content contract, preparing MORE Studio for container integration.
 
 ## v1.0
-feat: release MoRe Studio v1.0 with complete DOCX-to-.more pipeline, guided authoring UI, and integrated package management
+feat: release MORE Studio v1.0 with complete DOCX-to-.more pipeline, guided authoring UI, and integrated package management
 
 - Finalize full processing pipeline:
   DOCX → HTML → structured chapters → quiz parsing → image processing → .more packaging
@@ -271,7 +290,7 @@ feat: release MoRe Studio v1.0 with complete DOCX-to-.more pipeline, guided auth
   - refined button hierarchy and layout
   - minimal, guided interface
 
-This release establishes MoRe Studio as a complete, production-ready authoring tool for generating .more learning packages.
+This release establishes MORE Studio as a complete, production-ready authoring tool for generating .more learning packages.
 
 ## v0.9.0
 feat: complete end-to-end processing pipeline with image handling, packaging, and result validation
@@ -298,7 +317,7 @@ This completes the core lifecycle:
 input → parse → structure → transform → validate → package → output
 
 ## v0.8.0
-feat: implement core studio workflow, dashboard system, and UI foundation for MoRe Standard
+feat: implement core studio workflow, dashboard system, and UI foundation for MORE Standard
 
 - Add versioning logic based on author_id + title
 - Generate dynamic version numbers per package
@@ -360,7 +379,7 @@ feat: add authentication, author identity, contributors, and pipeline attributio
 - Ensure owner is always included as primary author
 - Refactor upload flow to pass structured data into pipeline
 
-This establishes identity + attribution layer for MoRe Studio.
+This establishes identity + attribution layer for MORE Studio.
 
 ## v0.5.0
 feat: add authentication, author identity, and contributor metadata system
@@ -376,7 +395,7 @@ feat: add authentication, author identity, and contributor metadata system
 - extended upload UI for contributor input
 - connected identity layer with packaging pipeline
 
-Result: MoRe Studio now supports authored content with persistent identity
+Result: MORE Studio now supports authored content with persistent identity
 
 ## v0.4.0
 refactor(core): restructure project into core and public modules with pipeline entry point
@@ -389,7 +408,7 @@ refactor(core): restructure project into core and public modules with pipeline e
 - improved project organization for scalability and security
 
 ## v0.3.0
-feat: implement MoRe build pipeline with multi-build support, packaging, and media processing
+feat: implement MORE build pipeline with multi-build support, packaging, and media processing
 
 - Added chapter parsing with structured HTML output
 - Implemented quiz extraction (MCQ, TF, SHORT) into JSON
@@ -404,7 +423,7 @@ feat: implement MoRe build pipeline with multi-build support, packaging, and med
 Result: end-to-end DOCX → .more package pipeline now functional
 
 ## v0.2.0
-feat(core): establish MoRe content pipeline (docx → html → .more package)
+feat(core): establish MORE content pipeline (docx → html → .more package)
 
 - clarified architecture: Pandoc-based conversion from DOCX to HTML
 - separated content (HTML) and quizzes (JSON)
