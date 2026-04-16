@@ -11,6 +11,7 @@ storage/processing/*
 storage/output/*
 storage/logs/*
 media/*
+public/app/pwa/*
 
 # Keep folder structure
 !storage/uploads/.gitkeep
