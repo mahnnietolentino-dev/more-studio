@@ -3,6 +3,7 @@
 
 # Generated files
 *.html
+*.apk
 
 # Ignore storage contents (but keep folders)
 storage/uploads/*
