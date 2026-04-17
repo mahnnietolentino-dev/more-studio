@@ -28,12 +28,12 @@ function parseQuizFromHtml($html)
 
                 foreach ($lines as $line) {
 
-                    if (!preg_match('/^[A-Z]\./', $line)) continue;
+                    if (!preg_match('/^[A-Za-z]\./', $line)) continue;
 
                     $isCorrect = str_contains($line, '*');
 
                     $line = str_replace('*', '', $line);
-                    $line = preg_replace('/^[A-Z]\.\s*/', '', $line);
+                    $line = preg_replace('/^[A-Za-z]\.\s*/', '', $line);
 
                     $choices[] = [
                         "text" => trim($line),

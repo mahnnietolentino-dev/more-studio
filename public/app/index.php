@@ -49,14 +49,13 @@
       <ul>
         <li>Works on older devices and iOS</li>
         <li>No installation required</li>
-        <li>Progress is stored in browser only</li>
+        <li>Quiz progress is stored in browser only</li>
         <li>Data may be lost if browser storage is cleared</li>
-        <li>Export features may be limited</li>
       </ul>
     </div>
 
     <div class="action-buttons">
-      <a class="btn primary" href="more-container.apk">
+      <a class="btn primary" href="app-release-more-1_1.apk">
         📱 Download Android App (Recommended)
       </a>
 
